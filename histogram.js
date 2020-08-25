@@ -1,9 +1,6 @@
 'use strict'
 
-const binary = require('node-pre-gyp')
-const path = require('path')
-const bindingPath = binary.find(path.resolve(path.join(__dirname, './package.json')))
-const { HdrHistogram, HdrHistogramIterator } = require(bindingPath)
+const { HdrHistogram, HdrHistogramIterator } = require('bindings')('histogram')
 const isNumber = value => typeof value === 'number' && value !== Infinity && value !== -Infinity
 
 class Histogram extends HdrHistogram {
