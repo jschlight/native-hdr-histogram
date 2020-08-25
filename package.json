@@ -37,7 +37,7 @@
   "devDependencies": {
     "pre-commit": "^1.2.2",
     "prebuild": "^10.0.1",
-    "standard": "^12.0.1",
+    "standard": "^14.3.4",
     "tap": "^14.0.0"
   },
   "binary": {
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "bindings": "^1.5.0",
-    "node-addon-api": "^1.1.0",
+    "node-addon-api": "^3.0.0",
     "prebuild-install": "^5.3.5"
   }
 }
