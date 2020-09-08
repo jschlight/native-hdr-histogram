@@ -1,12 +1,12 @@
 {
-  "name": "native-hdr-histogram",
-  "version": "0.8.0",
+  "name": "@inspiredware/native-hdr-histogram",
+  "version": "0.9.1",
   "description": "node.js bindings for hdr histogram C implementation",
   "main": "histogram.js",
   "gypfile": "true",
   "scripts": {
     "prepublish": "npm ls",
-    "install": "prebuild-install --runtime napi || node-gyp rebuild",
+    "install": "prebuild-install --runtime napi --verbose || node-gyp rebuild",
     "rebuild": "node-gyp rebuild",
     "prebuild": "prebuild --runtime napi --all --strip --verbose",
     "upload": "prebuild --runtime napi --upload ${GITHUB_TOKEN}",
