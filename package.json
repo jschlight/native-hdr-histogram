@@ -5,7 +5,7 @@
   "main": "histogram.js",
   "gypfile": "true",
   "scripts": {
-    "prepublish": "npm ls",
+    "prepare": "npm ls",
     "install": "prebuild-install --runtime napi --verbose || node-gyp rebuild",
     "rebuild": "node-gyp rebuild",
     "prebuild": "prebuild --runtime napi --all --strip --verbose",
