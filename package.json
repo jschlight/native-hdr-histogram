@@ -9,7 +9,7 @@
     "install": "prebuild-install --runtime napi --verbose || node-gyp rebuild",
     "rebuild": "node-gyp rebuild",
     "prebuild": "prebuild --runtime napi --all --strip --verbose",
-    "upload": "prebuild --runtime napi --upload ${GITHUB_TOKEN}",
+    "upload": "cross-env-shell prebuild --runtime napi --upload $GITHUB_TOKEN",
     "test": "standard && tap test.js"
   },
   "precommit": [
@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/mcollina/native-hdr-histogram#readme",
   "devDependencies": {
+    "cross-env": "^7.0.2",
     "pre-commit": "^1.2.2",
     "prebuild": "^10.0.1",
     "standard": "^14.3.4",
