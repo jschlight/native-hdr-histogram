@@ -1,40 +1,34 @@
 sudo: false
-language: generic
-git:
-  depth: 10
-branches:
-  except:
-  - /^v[0-9]/
-matrix:
-  include:
-  - os: linux
-    env: NODE_VERSION="14"
-  - os: linux
-    env: NODE_VERSION="12"
-  - os: linux
-    env: NODE_VERSION="10"
-  - os: osx
-    env: NODE_VERSION="14"
-  - os: osx
-    env: NODE_VERSION="12"
-  - os: osx
-    env: NODE_VERSION="10"
-env:
-  global:
-  - JOBS: '8'
-  - secure: xb95WkJu5sabLKHqjtwLbI+Hymqa5pUApmltV0+T12lCCmDFCb9Hn33ted4rI5qSZW98IjWDMEhNRqTmvcjbRWt+za9YXL+/Y4iY+RA/Ee/RxtWYihObQt8PiZht4dk/BBv0AjHcih7AvOrn3+mYtpDEkmptc9ZmFyEhvvrIknpnMOj5XOaehonl0th6qGQ0a7MQfV24aRgenEfZCnZGW8XFQ5cauovjaLrvzdsTT0iayQyQBov6Zw9nasrIjqyHE7Fj7qTSbxyIVdJVhrfH2mmBD+uDgTH/rtDjGCBlfZZNiM5ts0ODXOLHLGmUOpAzTQT988LEoSHoa+UYoSU6zGrh2ibNRDFKJdphB8RE810YAAHYp2QfecUC7H0vG3j1L+V7wKoWVPGG4vfpMX/KM5OnFslqoKtSZNaxISQ0c/EE+HMiI6kwzgfG9IsYQsfWzpOsYOt+ggI7Mhc4nFiW1x6VXwVObHgGrj2DKs47b41D06AH4El3qibMTAvJ8MxE2zXFUDgZC3j9f24fQ7nTNkAzpEy+WUP/X67nfvoEyyOPJ+l9qx5h/CyrnpL8O8mSSB8ive97eUz+yompC4GBJi5aFdsENB/694XwO+QzrcRIBCQsfPrKqPm57WwgwAKFP4B/S/67W1PGeAm9YayJH2QurBm4U1E72HUuJVervsw=
-  - secure: wugo4xhy7hO5SErSxysmEWvcOmuiCrexcS65qMUgFCkiN0ZyPiMhjY0n4EQinj5PCFbToM/4AQO8WjEgbDAljEvMuf63vx1git9bck69zpCAqh+XmaD8MJNBbtmVbUaADL3JLTY+/ObfRv8LQOIVmHXKk1GD8VSnJgOT3RKl/ZRWXrGUFByta37j3M8RTHyEMxhTR7NHD9Hl8CjNLfz22JQgcIWrhJl8OHZbwL8XZ9sL77Zwe1AQkaAh4BKReOetza1cyLq2HNANI+a3PrzCzP8Lc63r8kOEoMrP2fENHua689z64FrGwup6Ltfl2DGnCWZkknrm8djUQEjXBWxToqtYWVbZF0Lu14LxPG0mXT6X9lu284THdWJEkQ7xzPoF+yCFdVfvSKE+ktJKqK4wJk91RtpLqOkIzCxyvQRDLxT128FVOfWu/uiWZjbxLQHlUvZm4ZQH1FMH2c3PE4oYS+LOUhJNfmz9fEFEKKivh7BG5ZFbtIQSSd/iRyOXbbetkT6rZJdXVRyWqsuHfux6wbyCeDE/Od5ptGG1Z44tshpgX1waKFt26YG6dWdyuQxvVRip6RSKS/Bik9Iwe7J3rexUYnVzHbQgBpl0BXlK8rC+I22To/Z91bLGSzeXvc6nAEIT3tPeHK+AkBJp1iGSd++Ui/aEi16YKnJS2V7tWzo=
-before_install:
-- if [[ $(uname -s) == 'Linux' ]]; then
-    export PYTHONPATH=$(pwd)/py-local/lib/python2.7/site-packages;
-  else
-    export PYTHONPATH=$(pwd)/py-local/lib/python/site-packages;
-  fi;
-- scripts/validate_tag.sh
-- source ./scripts/install_node.sh ${NODE_VERSION}
-install:
-- export PATH=./node_modules/.bin/:$PATH
-before_script:
-- export COMMIT_MESSAGE=$(git show -s --format=%B $TRAVIS_COMMIT | tr -d '\n')
-script:
-- if [[ "${NODE_VERSION}" ]]; then ./scripts/build_against_node.sh; fi;
+language: node_js
+node_js:
+- node
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+    - gcc-4.8-multilib
+    - g++-4.8-multilib
+    - gcc-multilib
+    - g++-multilib
+os:
+- osx
+- linux
+before_deploy:
+- ARCHIVE_NAME="${TRAVIS_TAG:-latest}-$TRAVIS_OS_NAME-`uname -m`.tar"
+- npm run prebuild
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ARCH=ia32 npm run prebuild; fi
+- tar --create --verbose --file="$ARCHIVE_NAME" --directory "$TRAVIS_BUILD_DIR/prebuilds"
+  .
+deploy:
+  provider: releases
+  draft: false
+  prerelease: true
+  file: "$ARCHIVE_NAME"
+  skip_cleanup: true
+  on:
+    tags: true
+    node: node
+  api_key:
+    secure: l+VgaZFUljSi2LKDdTGgolJjIz+ydsxJSk2jFfVmhXy+Zn2k59CVn4hT59KbtnV+cg/5Bx4gec1xyj1jpmLJxYVmiSUNVyLJAEcH8x5ufKQdwKZHaoKM+P474+Hhtee25LLTfBHpMffFgg68fI2vmBvJeJ66BIXSFhNQoynHq0JaV06zn4fVN72eIU0ewDbPD34pQqaWgzqk74/M8jIX34mHJYZD/WpHaa/oIs0Cu2/m5t+noW2CJPVRRyAGstlTs66/RHvZ/BkpIf9v3urSY+tGGA5j8VsUVbd9FNZ+KzXDcA/ecfuRxpBLOvOphEUKrm9+tQ0/TPmhVC2iSjWlJQF2tg1TYcCM2aVLHu2/MTzEH2Ylzx4CHt1lA8IBBpX5ai/Ogkb7OcYovde93L2+njB60q0MnGb0JEHE8AS3P9mrsvzC6lCnO+BUIVpgx6OpvKyy/K+PWrmd6lDDI8lKb2WxUqqlbMUheBFLSVufCl/vyqXG8TCMObn3uWNNUTXwh3J4/uSbtKvoMgrSh1hMKITfjBHlI4DrqCJzZB3O1cmnK8elL33AyPJ5ObaQ1Mzl4Jmr68SMJZmdBDBXx0WTkK/eqmJDgdRTEwWQhKME+fmyAI0Qr6f7aa5qMzBUcJO7DQ+DcAwpyajNjLks+oL6Dev8slIfQRskz3Ki6nD+HBA=

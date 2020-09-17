@@ -1,21 +1,41 @@
-environment:
-  node_pre_gyp_accessKeyId:
-    secure: BB4XzOLXvG+XMmXyCVwqaFF/hKJnYvjIACQMD423QvY=
-  node_pre_gyp_secretAccessKey:
-    secure: BFW25HQ0Jdq8IpysC59Y2mh1J9IsXwWB+FTElHVSYVl5xDwwZPHrXwctZQLzKrw9
-  matrix:
-    - nodejs_version: 10
-    - nodejs_version: 12
-    - nodejs_version: "14.2.0"
+build: false
 
+skip_branch_with_pr: true
+
+environment:
+  matrix:
+    - nodejs_version: "Current"
+
+configuration: Release
 platform:
   - x86
   - x64
 
 install:
-  - scripts\build-appveyor.bat
+  - SET PATH=C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin;%PATH%
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - npm install
 
-skip_tags: true
-build: OFF
-test: OFF
-deploy: OFF
+test_script:
+  - node --version
+  - npm --version
+  - npm test
+
+after_test:
+  - ps: If ($env:nodejs_version -eq "Current") { npm run prebuild }
+
+artifacts:
+  - path: prebuilds
+    name: $(APPVEYOR_REPO_TAG_NAME)-win-$(PLATFORM)
+    type: zip
+
+deploy:
+  - provider: GitHub
+    artifact: /.*\.zip/
+    draft: false
+    prerelease: true
+    auth_token:
+      secure: nBwqH8VNIeaYOmYNhzCZ3d9KeSEhnr9b/0fTj/mEkORO8uH3jqz9ylIqpmbZEDSm
+    on:
+      appveyor_repo_tag: true
+      nodejs_version: "Current"
