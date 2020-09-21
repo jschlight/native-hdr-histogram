@@ -1,5 +1,5 @@
 {
-  "name": "native-hdr-histogram",
+  "name": "@inspiredware/native-hdr-histogram",
   "version": "0.9.12",
   "description": "node.js bindings for hdr histogram C implementation",
   "main": "histogram.js",
