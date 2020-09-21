@@ -49,5 +49,16 @@
     "bindings": "^1.5.0",
     "node-addon-api": "^3.0.0",
     "prebuild-install": "^5.3.5"
-  }
+  },
+  "files": [
+    "binding-src/",
+    "HdrHistogram_c/",
+    "prebuilds/",
+    "zlib/",
+    "binding.gyp",
+    "histogram.js",
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ]
 }
