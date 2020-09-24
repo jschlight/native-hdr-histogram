@@ -3,7 +3,7 @@ name: Prebuild Binaries
 on:
   push:
     branches:
-      - jschlight/ch1107/add-prebuild-support
+      - refs/tags/*
 
 jobs:
   prebuild-linux:
