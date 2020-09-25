@@ -39,6 +39,7 @@ jobs:
           node-version: 14.x
       - name: Checkout and Build
         uses: actions/checkout@v1
+      - run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
       - run: echo $TAG
       - run: npm install
       - run: npm run prebuild
