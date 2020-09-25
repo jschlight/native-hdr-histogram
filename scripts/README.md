@@ -2,7 +2,7 @@
 
 ### Publishing
 
-Two scripts are provided for publishing the native add on as an npm module.
+Two scripts are provided for publishing the native addon as an npm module.
 
 #### publish-local.sh
 
