@@ -6,7 +6,7 @@ on:
       - v*
 
 jobs:
-  create-release:
+  create_release:
     name: Create Release
     runs-on: ubuntu-latest
     outputs:
@@ -25,11 +25,11 @@ jobs:
           prerelease: true
 
   prebuild-linux:
-    name: Linux
+    name: Prebuild Linux
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env: 
-      TAG: ${{ github.event.release.tag_name }}
+      UPLOAD_URL: ${{ needs.create_release.outputs.upload_url }}
     steps:
       - name: Install Toolchain
         run: sudo apt-get install g++-multilib
@@ -40,7 +40,7 @@ jobs:
       - name: Checkout and Build
         uses: actions/checkout@v1
       - run: echo ::set-output name=TAG::${GITHUB_REF#refs/tags/}
-      - run: echo $TAG
+      - run: echo $TAG - $UPLOAD_URL
       - run: npm install
       - run: npm run prebuild
       - run: tar --create --verbose --file="${TAG}-linux-x86_64.tar" --directory "./prebuilds" .
@@ -49,7 +49,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create-release.outputs.upload_url }}  
+          upload_url: ${UPLOAD_URL}  
           asset_path: "./${TAG}-linux-x86_64.tar"
           asset_name: "${TAG}-linux-x86_64.tar"
           asset_content_type: application/tar
