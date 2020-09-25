@@ -3,15 +3,17 @@ name: Test
 on:
   push:
   pull_request:
+  schedule:
+    - cron: "0 4 * * 0"
 
 jobs:
   test:
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        node-version: [ 12.18.0 ]
-        operating-system: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [12.x, 14.x]
 
     steps:
       - uses: actions/checkout@v2
