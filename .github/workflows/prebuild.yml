@@ -27,6 +27,8 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env: 
+      TAG: ${{ github.ref }}
     steps:
       - name: Install Toolchain
         run: sudo apt-get install g++-multilib
@@ -38,13 +40,13 @@ jobs:
         uses: actions/checkout@v1
       - run: npm install
       - run: npm run prebuild
-      - run: tar --create --verbose --file="${GITHUB_REF}-linux-x86_64.tar" --directory "./prebuilds" .
+      - run: tar --create --verbose --file="${TAG}-linux-x86_64.tar" --directory "./prebuilds" .
       - name: Upload Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}  
-          asset_path: "./${GITHUB_REF}-linux-x86_64.tar"
-          asset_name: "${GITHUB_REF}-linux-x86_64.tar"
+          asset_path: "./${TAG}-linux-x86_64.tar"
+          asset_name: "${TAG}-linux-x86_64.tar"
           asset_content_type: application/tar
