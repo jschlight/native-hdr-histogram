@@ -2,8 +2,8 @@ name: Prebuild Binaries
 
 on:
   push:
-    branches:
-      - refs/tags/*
+    tags:        
+      - v*
 
 jobs:
   prebuild-linux:
