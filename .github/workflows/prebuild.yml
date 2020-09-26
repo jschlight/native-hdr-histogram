@@ -35,14 +35,14 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: Checkout and Build
+      - name: Checkout
         uses: actions/checkout@v1
       - name: Set TAG
         run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
       - name: Set FILENAME
         run: echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
       - name: Install, Prebuild, and Archive
-      - run: |
+        run: |
           npm install
           npm run prebuild
           tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
