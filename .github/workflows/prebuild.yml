@@ -50,12 +50,17 @@ jobs:
       - name: Install
         run: npm install
       - name: Prebuild 64-bit
-        run: npm run prebuild
+        run: |
+          env
+          npm run prebuild
+          ls -al ./prebuilds
       - if: matrix.os == 'ubuntu-latest'
         name: Prebuild 32-bit
         run: |
           ARCH=ia32
+          env
           npm run prebuild
+          ls -al ./prebuilds
       - name: Archive Prebuilds
         run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
       - name: Upload to GitHub Release
