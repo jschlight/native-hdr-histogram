@@ -24,6 +24,10 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           prerelease: true
+      - name: Debug
+        run: |
+          echo ${{ steps.create_release.outputs.upload_url }}
+          echo ${{ create_release.outputs.upload_url }}
 
   prebuild-linux:
     name: Prebuild Linux
@@ -41,11 +45,11 @@ jobs:
       - name: Set Env
         run: |
           echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-env name=FILENAME::${{ env.TAG }}-linux-x86_64.tar
+          echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
           echo ::set-env name=UPLOAD_URL::${{ needs.create_release.outputs.upload_url }}
-          echo TAG: ${TAG}
-          echo FILENAME: ${FILENAME}
-          echo UPLOAD_URL: ${UPLOAD_URL}
+          echo TAG: ${{ env.TAG }}
+          echo FILENAME: ${{ env.FILENAME }}
+          echo UPLOAD_URL: ${{ env.UPLOAD_URL }}
       - run: npm install
       - run: npm run prebuild
       - run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
