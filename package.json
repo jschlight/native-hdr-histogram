@@ -1,6 +1,6 @@
 {
   "name": "@inspiredware/native-hdr-histogram",
-  "version": "0.9.32",
+  "version": "0.9.33",
   "description": "node.js bindings for hdr histogram C implementation",
   "main": "histogram.js",
   "gypfile": "true",
