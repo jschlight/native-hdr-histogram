@@ -28,7 +28,7 @@ jobs:
   prebuild-linux:
     name: Prebuild Linux
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
     needs: create_release
     steps:
       - name: Install Toolchain
@@ -39,10 +39,10 @@ jobs:
           node-version: 14.x
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Set TAG
-        run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-      - name: Set FILENAME
-        run: echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
+      - name: Set Environment Variables
+        run: |
+          echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
+          echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
       - name: Install, Prebuild, and Archive
         run: |
           npm install
