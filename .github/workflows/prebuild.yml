@@ -9,9 +9,6 @@ jobs:
   create_release:
     name: Create Release
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      test: some text
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -24,10 +21,10 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           prerelease: true
-      - name: Debug
+      - name: Set Upload URL
         run: |
           echo ${{ steps.create_release.outputs.upload_url }}
-          echo ${{ create_release.outputs.upload_url }}
+          echo ::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}
 
   prebuild-linux:
     name: Prebuild Linux
