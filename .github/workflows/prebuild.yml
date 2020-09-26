@@ -41,18 +41,25 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v1
       - name: Set TAG
         run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-      - name: Set FILENAME # Must run after Set TAG
+      - name: Set FILENAME # must run after Set TAG
         run: echo ::set-env name=FILENAME::${TAG}-${{ matrix.os }}.tar
-      - name: Install, Prebuild, and Archive
+      - name: Install
+        run: npm install
+      - name: Prebuild 64-bit
+        run: npm run prebuild
+      - if: matrix.os == 'ubuntu-latest'
+        name: Prebuild 32-bit
         run: |
-          npm install
+          ARCH=ia32
           npm run prebuild
-          tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
-      - name: Upload Release
+      - name: Install, Prebuild, and Archive
+      - name: Archive Prebuilds
+        run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
+      - name: Upload to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
