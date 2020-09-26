@@ -25,13 +25,17 @@ jobs:
           release_name: ${{ github.ref }}
           prerelease: true
 
-  prebuild-linux:
-    name: Prebuild Linux
-    runs-on: ubuntu-latest
+  prebuild-posix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    name: Prebuild ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     needs: create_release
     steps:
-      - name: Install Toolchain
+      - if: matrix.os == 'ubuntu-latest'
+        name: Install Linux Toolchain
         run: sudo apt-get install g++-multilib
       - name: Install Node
         uses: actions/setup-node@v1
@@ -39,10 +43,10 @@ jobs:
           node-version: 14.x
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Set Environment Variables
-        run: |
-          echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
+      - name: Set TAG
+        run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
+      - name: Set FILENAME # Must run after Set TAG
+        run: echo ::set-env name=FILENAME::${TAG}-${{ matrix.os }}.tar
       - name: Install, Prebuild, and Archive
         run: |
           npm install
