@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      test: some text
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -40,7 +41,11 @@ jobs:
       - name: Set Env
         run: |
           echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
+          echo ::set-env name=FILENAME::${{ env.TAG }}-linux-x86_64.tar
+          echo ::set-env name=UPLOAD_URL::${{ needs.create_release.outputs.upload_url }}
+          echo TAG: ${TAG}
+          echo FILENAME: ${FILENAME}
+          echo UPLOAD_URL: ${UPLOAD_URL}
       - run: npm install
       - run: npm run prebuild
       - run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
@@ -49,7 +54,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          upload_url: ${{ env.UPLOAD_URL }}
           asset_path: ./${{ env.FILENAME }}
           asset_name: ${{ env.FILENAME }}
           asset_content_type: application/tar
