@@ -5,6 +5,9 @@ on:
     tags:        
       - v*
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   create_release:
     name: Create Release
@@ -15,21 +18,16 @@ jobs:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           prerelease: true
-      - name: Set Upload URL
-        run: |
-          echo ${{ steps.create_release.outputs.upload_url }}
-          echo ::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}
 
   prebuild-linux:
     name: Prebuild Linux
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs: create_release
     steps:
       - name: Install Toolchain
         run: sudo apt-get install g++-multilib
@@ -39,23 +37,19 @@ jobs:
           node-version: 14.x
       - name: Checkout and Build
         uses: actions/checkout@v1
-      - name: Set Env
-        run: |
-          echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-          echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
-          echo ::set-env name=UPLOAD_URL::${{ needs.create_release.outputs.upload_url }}
-          echo TAG: ${{ env.TAG }}
-          echo FILENAME: ${{ env.FILENAME }}
-          echo UPLOAD_URL: ${{ env.UPLOAD_URL }}
-      - run: npm install
-      - run: npm run prebuild
-      - run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
+      - name: Set TAG
+        run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
+      - name: Set FILENAME
+        run: echo ::set-env name=FILENAME::${TAG}-linux-x86_64.tar
+      - name: Install, Prebuild, and Archive
+      - run: |
+          npm install
+          npm run prebuild
+          tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
       - name: Upload Release
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ env.UPLOAD_URL }}
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ./${{ env.FILENAME }}
           asset_name: ${{ env.FILENAME }}
           asset_content_type: application/tar
