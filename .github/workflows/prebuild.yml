@@ -86,6 +86,10 @@ jobs:
         run: npm install
       - name: Prebuild 64-bit
         run: npm run prebuild
+      - name: Prebuild 32-bit
+        run: |
+          $env:PREBUILD_ARCH = "ia32"
+          npm run prebuild
       - name: Archive Prebuilds
         run: Compress-Archive -Path .\prebuilds\* -DestinationPath .\$env:FILENAME
       - name: Upload to GitHub Release
