@@ -57,7 +57,9 @@ jobs:
       - if: matrix.os == 'ubuntu-latest'
         name: Prebuild 32-bit
         run: |
-          ARCH=ia32 npm run prebuild
+          export ARCH=ia32
+          env
+          npm run prebuild
           ls -al ./prebuilds
       - name: Archive Prebuilds
         run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
