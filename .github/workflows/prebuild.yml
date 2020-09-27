@@ -67,7 +67,7 @@ jobs:
   prebuild-windows:
     name: Prebuild windows-latest
     runs-on: windows-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     needs: create_release
     steps:
       - name: Install Node
@@ -87,11 +87,11 @@ jobs:
       - name: Prebuild 64-bit
         run: npm run prebuild
       - name: Archive Prebuilds
-        run: Compress-Archive -Path ./prebuilds -DestinationPath ./%FILENAME%
+        run: Compress-Archive -Path prebuilds -DestinationPath %FILENAME%
       - name: Upload to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./${{ env.FILENAME }}
+          asset_path: ${{ env.FILENAME }}
           asset_name: ${{ env.FILENAME }}
           asset_content_type: application/zip
