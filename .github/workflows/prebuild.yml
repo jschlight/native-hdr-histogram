@@ -57,7 +57,7 @@ jobs:
       - if: matrix.os == 'ubuntu-latest'
         name: Prebuild 32-bit
         run: |
-          export ARCH=ia32
+          export PREBUILD_ARCH=ia32
           env
           npm run prebuild
           ls -al ./prebuilds
