@@ -81,6 +81,7 @@ jobs:
         shell: bash
       - name: Set FILENAME # must run after Set TAG
         run: echo ::set-env name=FILENAME::${{ env.TAG }}-${{ runner.os }}.zip
+        shell: bash
       - name: Install
         run: npm install
       - name: Prebuild 64-bit
