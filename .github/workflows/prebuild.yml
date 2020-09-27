@@ -87,9 +87,7 @@ jobs:
       - name: Prebuild 64-bit
         run: npm run prebuild
       - name: Archive Prebuilds
-        run: |
-          Compress-Archive -Path .\prebuilds -DestinationPath .\$env:FILENAME
-          dir
+        run: Compress-Archive -Path .\prebuilds\* -DestinationPath .\$env:FILENAME
       - name: Upload to GitHub Release
         uses: actions/upload-release-asset@v1
         with:
