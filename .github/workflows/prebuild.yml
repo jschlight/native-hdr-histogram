@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-    name: Prebuild ${{ matrix.os }}
+    name: Prebuild ${{ env.RUNNER_OS }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     needs: create_release
@@ -46,21 +46,14 @@ jobs:
       - name: Set TAG
         run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
       - name: Set FILENAME # must run after Set TAG
-        run: echo ::set-env name=FILENAME::${TAG}-${{ matrix.os }}.tar
+        run: echo ::set-env name=FILENAME::${TAG}-${{ env.RUNNER_OS }}.tar
       - name: Install
         run: npm install
       - name: Prebuild 64-bit
-        run: |
-          env
-          npm run prebuild
-          ls -al ./prebuilds
+        run: npm run prebuild
       - if: matrix.os == 'ubuntu-latest'
         name: Prebuild 32-bit
-        run: |
-          export PREBUILD_ARCH=ia32
-          env
-          npm run prebuild
-          ls -al ./prebuilds
+        run: PREBUILD_ARCH=ia32 npm run prebuild
       - name: Archive Prebuilds
         run: tar --create --verbose --file=${FILENAME} --directory ./prebuilds .
       - name: Upload to GitHub Release
