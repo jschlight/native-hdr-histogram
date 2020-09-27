@@ -48,19 +48,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v1
 
-      - name: Set TAG
-        run: echo ::set-env name=TAG::${GITHUB_REF#refs/tags/}
-        shell: bash
-
       - if: matrix.os != 'windows-latest'
-        name: Set Archive Env Variables (Posix)
+        name: Set Archive Env Variables (Linux, macOS)
         run: |
-          echo ::set-env name=ARCHIVE_NAME::${TAG}-${{ runner.os }}.tar
+          echo ::set-env name=ARCHIVE_NAME::${GITHUB_REF#refs/tags/}-${{ runner.os }}.tar
           echo ::set-env name=ARCHIVE_TYPE::application/tar
       - if: matrix.os == 'windows-latest'
         name: Set Archive Env Variables (Windows)
         run: |
-          echo ::set-env name=ARCHIVE_NAME::${TAG}-${{ runner.os }}.zip
+          echo ::set-env name=ARCHIVE_NAME::${GITHUB_REF#refs/tags/}-${{ runner.os }}.zip
           echo ::set-env name=ARCHIVE_TYPE::application/zip
         shell: bash
 
@@ -71,7 +67,7 @@ jobs:
         run: npm run prebuild
  
       - if: matrix.os == 'ubuntu-latest' # linux only, no macOS 32-bit build
-        name: Prebuild 32-bit (Posix)
+        name: Prebuild 32-bit (Linux)
         run: PREBUILD_ARCH=ia32 npm run prebuild
       - if: matrix.os == 'windows-latest' # windows only
         name: Prebuild 32-bit (Windows)
@@ -80,7 +76,7 @@ jobs:
           npm run prebuild
 
       - if: matrix.os != 'windows-latest'
-        name: Archive Prebuilds (Posix)
+        name: Archive Prebuilds (Linux, macOS)
         run: tar --create --verbose --file=${ARCHIVE_NAME} --directory ./prebuilds .
       - if: matrix.os == 'windows-latest'
         name: Archive Prebuilds (Windows)
