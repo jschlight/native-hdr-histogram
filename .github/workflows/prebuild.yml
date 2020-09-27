@@ -34,6 +34,9 @@ jobs:
     timeout-minutes: 10
     needs: create_release
     steps:
+      - if: matrix.os == 'ubuntu-latest'
+        name: Install Linux Toolchain
+        run: sudo apt-get install g++-multilib
       - name: Install Node
         uses: actions/setup-node@v1
         with:
