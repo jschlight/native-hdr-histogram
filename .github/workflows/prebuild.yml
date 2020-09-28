@@ -21,7 +21,10 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          prerelease: true
+          draft: true
+          body: |
+            The archive files in this release are not meant to be downloaded directly.
+            Instead, the binaries are downloaded by prebuildify-ci and bundled into the npm module.
 
   prebuild:
     strategy:
