@@ -44,7 +44,7 @@
   },
   "files": [
     "binding-src/",
-    "HdrHistogram_c/",
+    "HdrHistogram_c/src/",
     "prebuilds/",
     "zlib/",
     "binding.gyp",
