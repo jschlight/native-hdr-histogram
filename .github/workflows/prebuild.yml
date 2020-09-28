@@ -41,13 +41,15 @@ jobs:
         name: Install Linux Toolchain
         run: sudo apt-get install g++-multilib
 
-      - name: Install Node
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-
-      - name: Checkout Code
-        uses: actions/checkout@v1
 
       - if: matrix.os != 'windows-latest'
         name: Set Archive Env Variables (Linux, macOS)
