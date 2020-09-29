@@ -1,6 +1,6 @@
 {
-  "name": "@inspiredware/native-hdr-histogram",
-  "version": "0.9.59",
+  "name": "native-hdr-histogram",
+  "version": "0.8.0",
   "description": "node.js bindings for hdr histogram C implementation",
   "main": "histogram.js",
   "gypfile": "true",
@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jschlight/native-hdr-histogram.git"
+    "url": "git+https://github.com/mcollina/native-hdr-histogram.git"
   },
   "keywords": [
     "hdr",
@@ -24,7 +24,8 @@
   ],
   "author": "Matteo Collina <hello@matteocollina.com>",
   "contributors": [
-    "Glen Keane <glenkeane.94@gmail.com> (http://glenkeane.me/)"
+    "Glen Keane <glenkeane.94@gmail.com> (http://glenkeane.me/)",
+    "Jim Schlight <jim@inspiredware.com> (https://github.com/jschlight)"
   ],
   "license": "MIT",
   "bugs": {

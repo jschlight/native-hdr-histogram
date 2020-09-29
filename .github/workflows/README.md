@@ -4,7 +4,7 @@
 
 This GitHub workflow runs each time a new tag is pushed to the repository.
 
-The workflow builds binaries for each supported operating system and platform. The binaries are uploaded to a new release in the the GitHub repository. These binaries are later downloaded from the GitHub release when the native addon is installed by the user. 
+The workflow builds binaries for each supported operating system and platform. The binaries are uploaded to a new release in the the GitHub repository. These binaries are later downloaded from the GitHub release as part of the process of publishing the npm module. 
 
 The process of publishing the native addon to npm should not be performed until this GitHub workflow runs successfully to completion and the results are verified. 
 
@@ -12,7 +12,7 @@ The process of publishing the native addon to npm should not be performed until 
 
 This GitHub workflow runs when an authenticated `POST` is made to the GitHub API `/dispatches` endpoint.
 
-The workflow builds and publishes the native addon as an npm module. 
+The workflow downloads the binaries from the GitHub release created by the prebuild process and publishes the native addon as an npm module. 
 
 This workflow has the following requirements:
 
@@ -29,3 +29,4 @@ The `publish-github.sh` script in this project's `scripts` directory can be used
 This GitHub workflow runs on each push and pull request. It also runs each Sunday at 04:00 UTC.
 
 The workflow runs routine smoke tests on the code with the current and immediately previous Node.js LTS versions. 
+
